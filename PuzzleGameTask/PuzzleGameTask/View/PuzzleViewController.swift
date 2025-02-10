@@ -12,10 +12,10 @@ final class PuzzleViewController: UIViewController {
     var viewModel: PuzzleViewModelProtocol
     
     var puzzleCollectionView: UICollectionView!
-    var loadNewPuzzleButton: UIButton = UIButton()
+    private var loadNewPuzzleButton: UIButton = UIButton()
     
-    var draggingView: UIView?
-    var startIndexPath: IndexPath?
+    private var draggingView: UIView?
+    private var startIndexPath: IndexPath?
     
     private var portraitConstraints: [NSLayoutConstraint] = []
     private var landscapeConstraints: [NSLayoutConstraint] = []
@@ -89,8 +89,8 @@ final class PuzzleViewController: UIViewController {
             return
         }
         
-        let puzzlePiece = viewModel.puzzleTiles[selectedIndexPath.item]
-        guard !puzzlePiece.isFixed else {
+        let puzzleTile = viewModel.puzzleTiles[selectedIndexPath.item]
+        guard !puzzleTile.isFixed else {
             cleanupDragging()
             return
         }
@@ -117,12 +117,12 @@ final class PuzzleViewController: UIViewController {
 
         viewModel.swapTiles(at: startIndexPath.item, with: targetIndexPath.item)
 
-        self.viewModel.onPuzzleUpdated?()
-        self.cleanupDragging()
+        viewModel.onPuzzleUpdated?()
+        cleanupDragging()
 
         let targetTileIndex = targetIndexPath.item
 
-        if self.viewModel.isAtCorrectPosition(at: targetTileIndex) {
+        if viewModel.isAtCorrectPosition(at: targetTileIndex) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 if let cell = self.puzzleCollectionView.cellForItem(
                     at: IndexPath(item: targetTileIndex, section: 0)
